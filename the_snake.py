@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 
 import pygame
 
@@ -7,6 +7,9 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 400, 400
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
+
+# Константа центра поля
+SENTRAL_POINT = (GRID_WIDTH / 2 * GRID_SIZE, GRID_HEIGHT / 2 * GRID_SIZE)
 
 # Направления движения:
 UP = (0, -1)
@@ -22,7 +25,6 @@ BORDER_COLOR = (93, 216, 228)
 
 # Цвет яблока
 APPLE_COLOR = (255, 0, 0)
-BADAPPLE_COLOR = (0, 0, 255)
 
 # Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
@@ -45,11 +47,10 @@ class GameObject:
     """Общий класс"""
 
     def __init__(self):
-        self.position = (GRID_WIDTH / 2 * GRID_SIZE,
-                         GRID_HEIGHT / 2 * GRID_SIZE)
+        self.position = SENTRAL_POINT
         self.body_color = None
 
-    def draw(self):
+    def draw(self) -> None:
         """Функция отрисовки объекта"""
         pass
 
@@ -89,7 +90,7 @@ class Snake(GameObject):
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
 
-    def move(self):
+    def move(self) -> None:
         """Метод передвижения змеи"""
         # Добавление элемента в начале
         new_position_x = ((self.positions[0][0]
@@ -110,15 +111,11 @@ class Snake(GameObject):
 
     def reset(self):
         """Сбрасывание состояние змейки до дефолтного"""
-        last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
-        for i in self.positions:
-            last_rect = pygame.Rect(i, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+        screen.fill(BOARD_BACKGROUND_COLOR)
 
         self.lenght = 1
-        self.positions = [(GRID_WIDTH / 2 * 20, GRID_HEIGHT / 2 * 20)]
-        self.direction = RIGHT
+        self.positions = [SENTRAL_POINT]
+        self.direction = choice((RIGHT, LEFT, UP, DOWN))
         self.next_direction = None
         self.body_color = SNAKE_COLOR
         self.last = None
@@ -180,7 +177,10 @@ def main():
         """Проверка на съедание яблока"""
         if udav.get_head_position == apple.position:
             udav.lenght += 1
-            apple.position = apple.randomize_position()
+            while True:
+                apple.position = apple.randomize_position()
+                if apple.position not in udav.positions:
+                    break
 
         """Проверка на сталкновение с сомой собой"""
         if udav.get_head_position in udav.positions[1:]:
