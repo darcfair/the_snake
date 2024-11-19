@@ -26,6 +26,9 @@ BORDER_COLOR = (93, 216, 228)
 # Цвет яблока
 APPLE_COLOR = (255, 0, 0)
 
+# Цвет камня
+STONE_COLOR = (145, 110, 48)
+
 # Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
 
@@ -141,6 +144,14 @@ class Apple(GameObject):
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
 
+class Stone(Apple):
+    """Класс для камня"""
+
+    def __init__(self):
+        super().__init__()
+        self.body_color = STONE_COLOR
+
+
 def handle_keys(game_object):
     """Функция обработки действий пользователя"""
     for event in pygame.event.get():
@@ -166,6 +177,7 @@ def main():
     # Тут нужно создать экземпляры классов.
     udav = Snake()
     apple = Apple()
+    big_baby_stone = Stone()
 
     while True:
         clock.tick(SPEED)
@@ -182,12 +194,21 @@ def main():
                 if apple.position not in udav.positions:
                     break
 
+        """Проверка на столкновение с камнем"""
+        if udav.get_head_position == big_baby_stone.position:
+            # Небольшая задержка
+            clock.tick(1)
+            udav.reset()
+            big_baby_stone.position = big_baby_stone.randomize_position()
+
         """Проверка на сталкновение с сомой собой"""
         if udav.get_head_position in udav.positions[1:]:
             # Небольшая задержка
             clock.tick(1)
             udav.reset()
+            big_baby_stone.position = big_baby_stone.randomize_position()
 
+        big_baby_stone.draw()
         apple.draw()
         udav.draw()
         pygame.display.update()
