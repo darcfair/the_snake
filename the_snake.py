@@ -3,7 +3,7 @@ from random import randint, choice
 import pygame
 
 # Константы для размеров поля и сетки:
-SCREEN_WIDTH, SCREEN_HEIGHT = 400, 400
+SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
@@ -49,7 +49,7 @@ clock = pygame.time.Clock()
 class GameObject:
     """Общий класс"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.position = SENTRAL_POINT
         self.body_color = None
 
@@ -70,7 +70,7 @@ class Snake(GameObject):
         self.body_color = SNAKE_COLOR
         self.last = None
 
-    def update_direction(self):
+    def update_direction(self) -> None:
         """Метод обновления направления после нажатия на кнопку"""
         if self.next_direction:
             self.direction = self.next_direction
@@ -106,10 +106,12 @@ class Snake(GameObject):
         # Проверка на съедение яблока
         if self.lenght + 1 == len(self.positions):
             self.last = self.positions.pop()
+        else:
+            self.last = None
 
     @property
-    def get_head_position(self):
-        """Возвращает позицию головы змеи"""
+    def get_head_position(self) -> tuple:
+        """Возвращает позицию головы змеи (сделан как атрибут)"""
         return self.positions[0]
 
     def reset(self):
@@ -131,7 +133,7 @@ class Apple(GameObject):
         self.position = self.randomize_position()
         self.body_color = APPLE_COLOR
 
-    def randomize_position(self):
+    def randomize_position(self) -> tuple:
         """Задача случайной позиции яблоку"""
         x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
@@ -152,7 +154,7 @@ class Stone(Apple):
         self.body_color = STONE_COLOR
 
 
-def handle_keys(game_object):
+def handle_keys(game_object) -> None:
     """Функция обработки действий пользователя"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -179,6 +181,7 @@ def main():
     apple = Apple()
     big_baby_stone = Stone()
 
+    """Бесконечный цикл игры"""
     while True:
         clock.tick(SPEED)
 
