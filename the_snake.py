@@ -195,13 +195,14 @@ def main():
 
         handle_keys(udav)
         udav.move()
+        udav_in_aple = udav.get_head_position == baby_stone.position
+        udav_in_udav = udav.get_head_position in udav.positions[1:]
 
         """Проверка на съедание яблока"""
         if udav.get_head_position == apple.position:
             udav.lenght += 1
             apple.position = apple.randomize_position(udav.positions)
-        elif (udav.get_head_position == baby_stone.position or
-              udav.get_head_position in udav.positions[1:]):
+        elif ((udav_in_aple) or (udav_in_udav)):
             """Проверка на столкновение с камнем или с собой"""
             udav.reset()
             baby_stone.position = baby_stone.randomize_position(udav.positions)
