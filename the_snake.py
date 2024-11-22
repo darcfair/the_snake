@@ -160,11 +160,23 @@ def handle_keys(game_object) -> None:
         if event.type == pygame.QUIT:
             game_object.game_over()
         elif event.type == pygame.KEYDOWN:
+            global SPEED
             if event.key == pygame.K_ESCAPE:
                 game_object.game_over()
-            elif game_object.direction != COMANDS_DICT[event.key][0]:
-                game_object.update_direction(side=COMANDS_DICT[event.key][1])
-                break
+            elif event.key == pygame.K_KP_PLUS:
+                # Ускорение змейки
+                SPEED += 1
+            elif event.key == pygame.K_KP_MINUS:
+                # Замедление змейки
+                SPEED -= 1
+            else:
+                try:
+                    if game_object.direction != COMANDS_DICT[event.key][0]:
+                        game_object.update_direction(COMANDS_DICT
+                                                     [event.key][1])
+                        break
+                except KeyError:
+                    pass
 
 
 def main():
